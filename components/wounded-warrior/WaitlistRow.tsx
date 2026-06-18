@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, memo } from "react";
 
 const STATES = [
   "Texas","California","Florida","New York","Pennsylvania","Ohio","Georgia","North Carolina",
@@ -23,12 +23,11 @@ const INITIAL_FEED = [
   { region: "Washington",     when: "1 hr ago"   },
 ];
 
-/* The card field is a symbolic "bucket": a large need (TOTAL marks), only a
-   small share funded (FUNDED). It creeps upward but caps at CAP — well short of
-   full — so the gap never closes and the shortfall always stays visible. */
-const TOTAL  = 84;
-const FUNDED = 15;
-const CAP    = 27;
+/* Fixed layout: 3 funded, 1 in-progress, 8 waiting = 12 total.
+   The ratio conveys that we're chipping away but the need is large. */
+const TOTAL    = 12;
+const FUNDED   = 3;
+const PROGRESS = 1; // the card being worked on right now
 
 /* ── Ticker is memoized so React never re-renders it after mount.
    All animation is pure DOM — no state, no re-render interference. ── */
@@ -43,16 +42,13 @@ const TickerFeed = memo(function TickerFeed() {
     const ROW_H = 42;
 
     const id = setInterval(() => {
-      /* 1 – animate: scroll list up one row */
       list.style.transition = "transform .55s cubic-bezier(.2,.7,.2,1)";
       list.style.transform  = `translateY(-${ROW_H}px)`;
 
-      /* 2 – after the transition, recycle the top item to the bottom */
       setTimeout(() => {
         const first = list.children[0] as HTMLLIElement | null;
         if (!first) return;
 
-        /* pick a state not already in the visible window */
         const visible = new Set(
           [...list.children].slice(1).map(el => el.getAttribute("data-region") ?? "")
         );
@@ -60,20 +56,16 @@ const TickerFeed = memo(function TickerFeed() {
         do { region = STATES[Math.floor(Math.random() * STATES.length)]; }
         while (visible.has(region));
 
-        /* update the recycled item's content in-place */
         first.setAttribute("data-region", region);
         const rEl = first.querySelector(".t-region");
         const wEl = first.querySelector(".t-when");
         if (rEl) rEl.textContent = region;
         if (wEl) wEl.textContent = "just now";
 
-        /* move to end (appears off-screen below) */
         list.appendChild(first);
-
-        /* snap back to origin without animation */
         list.style.transition = "none";
         list.style.transform  = "translateY(0)";
-        void list.offsetHeight; /* force reflow before re-enabling transition */
+        void list.offsetHeight;
       }, 560);
     }, 3200);
 
@@ -81,10 +73,7 @@ const TickerFeed = memo(function TickerFeed() {
   }, []);
 
   return (
-    <ul
-      ref={listRef}
-      style={{ listStyle: "none", margin: 0, padding: 0 }}
-    >
+    <ul ref={listRef} style={{ listStyle: "none", margin: 0, padding: 0 }}>
       {INITIAL_FEED.map((item, i) => (
         <li
           key={i}
@@ -121,27 +110,23 @@ const TickerFeed = memo(function TickerFeed() {
   );
 });
 
-/* ── Main WaitlistRow component ── */
-export default function WaitlistRow() {
-  const countRef = useRef<HTMLSpanElement>(null);
-  const [funded, setFunded] = useState(FUNDED);
-
-  /* count-up animation */
+/* ── Count-up on scroll ── */
+function useCountUp(target: number, duration = 1500) {
+  const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    const el = countRef.current;
+    const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.textContent = "418";
+      el.textContent = target.toLocaleString();
       return;
     }
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       io.disconnect();
-      const target = 418, dur = 1500;
       let start: number | null = null;
       function step(ts: number) {
         if (!start) start = ts;
-        const p = Math.min((ts - start) / dur, 1);
+        const p = Math.min((ts - start) / duration, 1);
         el!.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString();
         if (p < 1) requestAnimationFrame(step);
         else el!.textContent = target.toLocaleString();
@@ -150,21 +135,16 @@ export default function WaitlistRow() {
     }, { threshold: 0.6 });
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [target, duration]);
+  return ref;
+}
 
-  /* card-glyph fill — one more card commits every few seconds, but only up to
-     CAP so the gap is never closed. Runs independently of the ticker. */
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => setFunded(f => Math.min(f + 1, CAP)), 5200);
-    const t  = setTimeout(() => setFunded(f => Math.min(f + 1, CAP)), 2400);
-    return () => { clearInterval(id); clearTimeout(t); };
-  }, []);
-
-  const remaining = TOTAL - funded;
+export default function WaitlistRow() {
+  const countRef = useCountUp(418);
 
   return (
     <div style={{ marginTop: "clamp(20px,3vw,30px)", borderTop: "1px solid rgba(181,223,208,0.18)", paddingTop: 20 }}>
+
       {/* header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
         <span className="eyebrow" style={{ color: "var(--color-mint)" }}>This year, at a glance</span>
@@ -203,116 +183,105 @@ export default function WaitlistRow() {
         </div>
       </div>
 
-      {/* card field — the "bucket": mostly empty, slowly filling, never full */}
+      {/* card row — one line, always: 3 gold · 1 in-progress · 8 waiting */}
       <div
         role="img"
-        aria-label={`Sponsorship shortfall: ${funded} of ${TOTAL} Memberships funded, ${remaining} wounded veterans still waiting`}
-        className="card-grid"
+        aria-label={`${FUNDED} of ${TOTAL} shown as sponsored, 1 in progress, ${TOTAL - FUNDED - PROGRESS} still waiting`}
+        className="card-row"
       >
         {Array.from({ length: TOTAL }, (_, i) => {
-          const isFunded   = i < funded;
-          const isFrontier = i === funded;
-          const cls = isFunded
-            ? "card-glyph card-funded"
-            : isFrontier
-              ? "card-glyph card-frontier"
-              : "card-glyph";
-          return (
-            <span key={i} className={cls}>
-              {isFrontier ? (
-                <span className="card-fill" aria-hidden="true" />
-              ) : (
-                <span
-                  className="card-stripe"
-                  style={{ background: isFunded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.28)" }}
-                />
-              )}
-            </span>
-          );
+          if (i < FUNDED)                    return <span key={i} className="card card-funded"><span className="card-chip" /></span>;
+          if (i === FUNDED)                  return <span key={i} className="card card-progress"><span className="card-chip" /></span>;
+          /* waiting */                      return <span key={i} className="card"><span className="card-chip" /></span>;
         })}
       </div>
 
       <p style={{ marginTop: 18, fontSize: "0.96rem", color: "#C7D4CF", maxWidth: "64ch" }}>
-        Every gold card is a Membership funded this year. The outlines are the gap that&rsquo;s
-        left &mdash; an estimated{" "}
+        Each card is a Membership. An estimated{" "}
         <span style={{ color: "var(--color-gold)", fontWeight: 700, borderBottom: "1.5px dashed rgba(255,196,62,.5)", paddingBottom: 1 }}>5.1&nbsp;million+</span>{" "}
-        wounded veterans with a 30%+ service-connected disability qualify, and the need keeps
-        outpacing the giving. Each gift fills one more card &mdash; we just need everyone to pitch in.
+        wounded veterans with a 30%+ service-connected disability are eligible &mdash; and many
+        are on the list right now. Each gift moves one more name off it.
       </p>
 
       <style>{`
-        .glance-top { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px,4vw,52px); align-items: center; }
+        .glance-top {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: clamp(24px,4vw,52px);
+          align-items: center;
+        }
         @media (max-width: 760px) {
           .glance-top { grid-template-columns: 1fr; gap: 24px; }
-          .live-feed-col { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid rgba(181,223,208,0.18); padding-top: 22px; }
+          .live-feed-col {
+            border-left: 0 !important;
+            padding-left: 0 !important;
+            border-top: 1px solid rgba(181,223,208,0.18);
+            padding-top: 22px;
+          }
         }
 
-        /* card field — responsive: columns auto-fill and scale with width, so
-           the whole "bucket" of need stays on screen at a comfortable size */
-        .card-grid {
+        /* always one row, cards share the full width */
+        .card-row {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(clamp(26px, 3.4vw, 40px), 1fr));
-          gap: clamp(5px, 0.8vw, 9px);
+          grid-template-columns: repeat(${TOTAL}, 1fr);
+          gap: clamp(5px, 0.9vw, 10px);
           margin-top: 18px;
         }
-        .card-glyph {
+        .card {
           display: block;
           position: relative;
           aspect-ratio: 1.586 / 1;
-          border-radius: 4px;
-          border: 1.5px solid rgba(181,223,208,.32);
+          border-radius: 5px;
+          border: 1.5px solid rgba(181,223,208,.38);
           background: transparent;
           overflow: hidden;
-          transition: background .6s ease, border-color .6s ease;
         }
-        .card-funded {
-          border-color: var(--color-gold);
-          background: var(--color-gold);
-        }
-        .card-stripe {
+        /* the small chip mark inside each card (mimics a card's EMV chip) */
+        .card-chip {
           position: absolute;
-          left: 18%;
-          top: 40%;
-          width: 40%;
-          height: 13%;
-          border-radius: 2px;
+          left: 16%;
+          top: 32%;
+          width: 28%;
+          height: 36%;
+          border-radius: 3px;
           display: block;
+          border: 1.5px solid rgba(181,223,208,.28);
+          background: transparent;
         }
 
-        /* frontier card — the one being "filled" right now: gold liquid rises
-           and bobs like a bucket taking on water, with a shimmer sweep */
-        .card-frontier {
+        /* funded — solid gold */
+        .card-funded {
+          background: var(--color-gold);
           border-color: var(--color-gold);
-          box-shadow: 0 0 0 1px rgba(255,196,62,.25), 0 0 14px -2px rgba(255,196,62,.5);
         }
-        .card-fill {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          height: 45%;
-          background: linear-gradient(to top, var(--color-gold) 0%, rgba(255,196,62,.55) 100%);
-          animation: cardFillBob 2.4s ease-in-out infinite;
+        .card-funded .card-chip {
+          border-color: rgba(0,30,51,.30);
+          background: rgba(0,30,51,.12);
         }
-        .card-frontier::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.4) 50%, transparent 65%);
-          transform: translateX(-120%);
-          animation: cardSweep 2.1s ease-in-out infinite;
+
+        /* in-progress — slow, gentle gold breathe */
+        @keyframes cardBreathe {
+          0%, 100% {
+            background: rgba(255,196,62,.18);
+            border-color: rgba(255,196,62,.45);
+          }
+          50% {
+            background: rgba(255,196,62,.45);
+            border-color: rgba(255,196,62,.85);
+          }
         }
-        @keyframes cardFillBob {
-          0%, 100% { height: 38%; }
-          50%      { height: 64%; }
+        .card-progress {
+          animation: cardBreathe 3.6s ease-in-out infinite;
         }
-        @keyframes cardSweep {
-          0%   { transform: translateX(-120%); }
-          100% { transform: translateX(120%); }
+        .card-progress .card-chip {
+          border-color: rgba(255,196,62,.35);
         }
         @media (prefers-reduced-motion: reduce) {
-          .card-fill { animation: none; height: 50%; }
-          .card-frontier::after { display: none; }
+          .card-progress {
+            animation: none;
+            background: rgba(255,196,62,.30);
+            border-color: rgba(255,196,62,.60);
+          }
         }
       `}</style>
     </div>
