@@ -23,8 +23,8 @@ const INITIAL_FEED = [
   { region: "Washington",     when: "1 hr ago"   },
 ];
 
-const TOTAL  = 30;
-const FUNDED = 9;
+const TOTAL  = 10;
+const FUNDED = 3;
 
 /* ── Ticker is memoized so React never re-renders it after mount.
    All animation is pure DOM — no state, no re-render interference. ── */
@@ -200,24 +200,26 @@ export default function WaitlistRow() {
       <div
         role="img"
         aria-label="Sponsorship progress: funded spots shown in gold, waiting spots shown as outlines"
-        style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 18 }}
+        className="card-grid"
       >
-        {Array.from({ length: TOTAL }, (_, i) => (
-          <span
-            key={i}
-            style={{
-              width: 26, height: 17, borderRadius: 3, position: "relative", display: "inline-block",
-              border: i < funded ? "1px solid var(--color-gold)" : "1px solid rgba(181,223,208,.35)",
-              background: i < funded ? "var(--color-gold)" : "transparent",
-              transition: "background .6s ease, border-color .6s ease",
-            }}
-          >
-            <span style={{
-              position: "absolute", left: 3, top: 5, width: 9, height: 2, borderRadius: 2, display: "block",
-              background: i < funded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.3)",
-            }} />
-          </span>
-        ))}
+        {Array.from({ length: TOTAL }, (_, i) => {
+          const isFunded  = i < funded;
+          const isPending = i === funded;
+          return (
+            <span
+              key={i}
+              className={isPending ? "card-glyph card-loading" : "card-glyph"}
+              style={{
+                borderColor: isFunded ? "var(--color-gold)" : undefined,
+                background:  isFunded ? "var(--color-gold)" : undefined,
+              }}
+            >
+              <span className="card-stripe" style={{
+                background: isFunded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.3)",
+              }} />
+            </span>
+          );
+        })}
       </div>
 
       <p style={{ marginTop: 18, fontSize: "0.96rem", color: "#C7D4CF", maxWidth: "62ch" }}>
@@ -231,6 +233,60 @@ export default function WaitlistRow() {
         @media (max-width: 760px) {
           .glance-top { grid-template-columns: 1fr; gap: 24px; }
           .live-feed-col { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid rgba(181,223,208,0.18); padding-top: 22px; }
+        }
+
+        /* card glyph grid — always 10 columns, fills full width */
+        .card-grid {
+          display: grid;
+          grid-template-columns: repeat(10, 1fr);
+          gap: clamp(6px, 1vw, 10px);
+          margin-top: 18px;
+        }
+        .card-glyph {
+          display: block;
+          position: relative;
+          aspect-ratio: 1.586 / 1;
+          border-radius: 4px;
+          border: 1.5px solid rgba(181,223,208,.35);
+          background: transparent;
+          transition: background .6s ease, border-color .6s ease;
+        }
+        .card-stripe {
+          position: absolute;
+          left: 18%;
+          top: 38%;
+          width: 40%;
+          height: 14%;
+          border-radius: 2px;
+          display: block;
+        }
+
+        /* spinning-arc loading border */
+        @property --ba {
+          syntax: '<angle>';
+          inherits: false;
+          initial-value: 0turn;
+        }
+        @keyframes borderSpin {
+          to { --ba: 1turn; }
+        }
+        .card-loading {
+          border: 1.5px solid transparent;
+          background:
+            conic-gradient(from var(--ba),
+              rgba(255,196,62,0) 0%,
+              rgba(255,196,62,0) 60%,
+              rgba(255,196,62,.9) 80%,
+              rgba(255,196,62,0) 100%
+            ) border-box,
+            rgba(255,196,62,.06) padding-box;
+          animation: borderSpin 1.8s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .card-loading {
+            border-color: rgba(255,196,62,.5);
+            animation: none;
+          }
         }
       `}</style>
     </div>

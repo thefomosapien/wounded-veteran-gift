@@ -78,9 +78,9 @@ export default function Hero() {
                 lineHeight: 1.5,
               }}
             >
-              WeSalute has always given wounded veterans a full year of WeSalute+
-              complimentary. Today more warriors qualify than we can fund &mdash; so your
-              contribution can ensure we never have a waitlist.
+              WeSalute has sponsored wounded veterans with a full year of WeSalute+ since day
+              one &mdash; but the need has outpaced the giving. Your gift moves a warrior off
+              the waitlist and into the membership they deserve.
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 22 }}>

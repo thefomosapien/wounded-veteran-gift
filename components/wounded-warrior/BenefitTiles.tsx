@@ -126,7 +126,7 @@ export default function BenefitTiles() {
           {/* Benefit tiles grid */}
           <div className="gives-tiles">
             {TILES.map((tile) => (
-              <ScrollReveal key={tile.title}>
+              <ScrollReveal key={tile.title} style={{ height: "100%" }}>
                 <div
                   style={{
                     background: "var(--color-slate-lift)",
@@ -216,8 +216,10 @@ export default function BenefitTiles() {
       <style>{`
         .gives-layout { display: grid; grid-template-columns: .92fr 1.08fr; gap: clamp(22px,3.5vw,44px); margin-top: clamp(36px,4vw,52px); align-items: stretch; }
         @media (max-width: 880px) { .gives-layout { grid-template-columns: 1fr; } }
-        .gives-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .gives-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; }
         @media (max-width: 560px) { .gives-tiles { grid-template-columns: 1fr; } }
+        .gives-tiles > * { height: 100%; }
+        .gtile { height: 100%; box-sizing: border-box; }
         .gtile:hover { border-color: rgba(255,196,62,.45) !important; transform: translateY(-3px); }
       `}</style>
     </section>

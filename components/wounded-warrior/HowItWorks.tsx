@@ -49,7 +49,7 @@ export default function HowItWorks() {
         {/* Steps */}
         <div className="steps-grid" style={{ marginTop: "clamp(34px,4vw,52px)" }}>
           {STEPS.map((step) => (
-            <ScrollReveal key={step.idx}>
+            <ScrollReveal key={step.idx} style={{ height: "100%" }}>
               <div
                 style={{
                   background: "var(--color-cream)",
@@ -57,6 +57,8 @@ export default function HowItWorks() {
                   borderRadius: "var(--radius-card)",
                   padding: "26px 24px 28px",
                   position: "relative",
+                  height: "100%",
+                  boxSizing: "border-box",
                 }}
               >
                 {/* glyph — ID card icon */}
