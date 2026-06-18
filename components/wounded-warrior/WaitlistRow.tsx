@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 
 const STATES = [
   "Texas","California","Florida","New York","Pennsylvania","Ohio","Georgia","North Carolina",
@@ -10,40 +10,126 @@ const STATES = [
   "Hawaii","Maine","New Hampshire","Rhode Island","Montana","Delaware","Vermont","Wyoming",
 ];
 
-const TIMES = [
-  "just now","just now","1 min ago","2 min ago","3 min ago","5 min ago","7 min ago",
-  "10 min ago","14 min ago","18 min ago","23 min ago","28 min ago","35 min ago","42 min ago","51 min ago",
+const INITIAL_FEED = [
+  { region: "Texas",          when: "just now"   },
+  { region: "Ohio",           when: "2 min ago"  },
+  { region: "California",     when: "7 min ago"  },
+  { region: "Georgia",        when: "14 min ago" },
+  { region: "North Carolina", when: "21 min ago" },
+  { region: "Arizona",        when: "33 min ago" },
+  { region: "Florida",        when: "48 min ago" },
+  { region: "Virginia",       when: "1 hr ago"   },
+  { region: "Michigan",       when: "1 hr ago"   },
+  { region: "Washington",     when: "1 hr ago"   },
 ];
-
-function pickRandom<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function buildFeed(count = 10) {
-  const used = new Set<string>();
-  return Array.from({ length: count }, (_, i) => {
-    let region: string;
-    do { region = pickRandom(STATES); } while (used.has(region));
-    used.add(region);
-    return { region, when: TIMES[Math.min(i, TIMES.length - 1)] };
-  });
-}
 
 const TOTAL  = 30;
 const FUNDED = 9;
 
-export default function WaitlistRow() {
-  const countRef  = useRef<HTMLSpanElement>(null);
-  const tickerRef = useRef<HTMLUListElement>(null);
-  const [funded, setFunded] = useState(FUNDED);
-  const [feed, setFeed] = useState(() => buildFeed(10));
+/* ── Ticker is memoized so React never re-renders it after mount.
+   All animation is pure DOM — no state, no re-render interference. ── */
+const TickerFeed = memo(function TickerFeed() {
+  const listRef = useRef<HTMLUListElement>(null);
 
-  /* count-up */
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ROW_H = 42;
+
+    const id = setInterval(() => {
+      /* 1 – animate: scroll list up one row */
+      list.style.transition = "transform .55s cubic-bezier(.2,.7,.2,1)";
+      list.style.transform  = `translateY(-${ROW_H}px)`;
+
+      /* 2 – after the transition, recycle the top item to the bottom */
+      setTimeout(() => {
+        const first = list.children[0] as HTMLLIElement | null;
+        if (!first) return;
+
+        /* pick a state not already in the visible window */
+        const visible = new Set(
+          [...list.children].slice(1).map(el => el.getAttribute("data-region") ?? "")
+        );
+        let region: string;
+        do { region = STATES[Math.floor(Math.random() * STATES.length)]; }
+        while (visible.has(region));
+
+        /* update the recycled item's content in-place */
+        first.setAttribute("data-region", region);
+        const rEl = first.querySelector(".t-region");
+        const wEl = first.querySelector(".t-when");
+        if (rEl) rEl.textContent = region;
+        if (wEl) wEl.textContent = "just now";
+
+        /* move to end (appears off-screen below) */
+        list.appendChild(first);
+
+        /* snap back to origin without animation */
+        list.style.transition = "none";
+        list.style.transform  = "translateY(0)";
+        void list.offsetHeight; /* force reflow before re-enabling transition */
+      }, 560);
+    }, 3200);
+
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <ul
+      ref={listRef}
+      style={{ listStyle: "none", margin: 0, padding: 0 }}
+    >
+      {INITIAL_FEED.map((item, i) => (
+        <li
+          key={i}
+          data-region={item.region}
+          style={{
+            height: 42,
+            display: "flex",
+            alignItems: "center",
+            gap: 11,
+            fontSize: "0.93rem",
+            color: "#CBD8D3",
+            borderBottom: "1px solid rgba(181,223,208,.08)",
+          }}
+        >
+          <span style={{
+            width: 21, height: 21, borderRadius: 5, background: "var(--color-gold)",
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}>
+            <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: "var(--color-slate)", fill: "none", strokeWidth: 2 }}>
+              <path d="M5 12l5 5L20 7" />
+            </svg>
+          </span>
+          <span>
+            A supporter in{" "}
+            <b className="t-region" style={{ color: "var(--color-cream)", fontWeight: 600 }}>{item.region}</b>
+            {" "}sponsored a warrior
+          </span>
+          <span className="t-when" style={{ marginLeft: "auto", fontFamily: "var(--font-space)", fontSize: "0.67rem", color: "var(--color-mint-deep)", whiteSpace: "nowrap" }}>
+            {item.when}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+});
+
+/* ── Main WaitlistRow component ── */
+export default function WaitlistRow() {
+  const countRef = useRef<HTMLSpanElement>(null);
+  const [funded, setFunded] = useState(FUNDED);
+
+  /* count-up animation */
   useEffect(() => {
     const el = countRef.current;
     if (!el) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) { el.textContent = "418"; return; }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.textContent = "418";
+      return;
+    }
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       io.disconnect();
@@ -52,8 +138,7 @@ export default function WaitlistRow() {
       function step(ts: number) {
         if (!start) start = ts;
         const p = Math.min((ts - start) / dur, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        el!.textContent = Math.floor(eased * target).toLocaleString();
+        el!.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString();
         if (p < 1) requestAnimationFrame(step);
         else el!.textContent = target.toLocaleString();
       }
@@ -63,57 +148,17 @@ export default function WaitlistRow() {
     return () => io.disconnect();
   }, []);
 
-  /* ticker scroll + new random entries injected periodically */
+  /* card-glyph fill — runs independently of ticker */
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-    const ROW_H = 42;
-    let idx = 0;
-
-    const id = setInterval(() => {
-      idx++;
-      const list = tickerRef.current;
-      if (!list) return;
-      list.style.transition = "";
-      list.style.transform  = `translateY(-${idx * ROW_H}px)`;
-
-      setTimeout(() => {
-        const first = list.children[0] as HTMLElement | undefined;
-        if (!first) return;
-        /* recycle the scrolled-off item with a fresh random entry */
-        setFeed(prev => {
-          const next = [...prev];
-          next.shift();
-          // pick a state not already in view
-          const inView = new Set(next.map(e => e.region));
-          let region: string;
-          do { region = pickRandom(STATES); } while (inView.has(region));
-          next.push({ region, when: "just now" });
-          return next;
-        });
-        list.style.transition = "none";
-        idx--;
-        list.style.transform = `translateY(-${idx * ROW_H}px)`;
-        void list.offsetHeight;
-        list.style.transition = "";
-      }, 560);
-
-      if (idx % 2 === 0) setFunded(f => Math.min(f + 1, TOTAL));
-    }, 3200);
-
-    setTimeout(() => setFunded(f => Math.min(f + 1, TOTAL)), 1600);
-    return () => clearInterval(id);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setFunded(f => Math.min(f + 1, TOTAL)), 6400);
+    const t  = setTimeout(() => setFunded(f => Math.min(f + 1, TOTAL)), 1600);
+    return () => { clearInterval(id); clearTimeout(t); };
   }, []);
 
   return (
-    <div
-      style={{
-        marginTop: "clamp(20px,3vw,30px)",
-        borderTop: "1px solid rgba(181,223,208,0.18)",
-        paddingTop: 20,
-      }}
-    >
-      {/* head */}
+    <div style={{ marginTop: "clamp(20px,3vw,30px)", borderTop: "1px solid rgba(181,223,208,0.18)", paddingTop: 20 }}>
+      {/* header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
         <span className="eyebrow" style={{ color: "var(--color-mint)" }}>This year, at a glance</span>
         <span style={{ fontFamily: "var(--font-space)", fontSize: "0.7rem", color: "#8FC9B6", letterSpacing: "0.04em", display: "flex", gap: 18 }}>
@@ -146,33 +191,7 @@ export default function WaitlistRow() {
             Recent sponsorships
           </div>
           <div style={{ height: 126, overflow: "hidden", position: "relative" }} aria-live="polite" aria-atomic="false">
-            <ul
-              ref={tickerRef}
-              style={{ listStyle: "none", margin: 0, padding: 0, transition: "transform .55s cubic-bezier(.2,.7,.2,1)" }}
-            >
-              {feed.map((item, i) => (
-                <li
-                  key={i}
-                  style={{
-                    height: 42,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 11,
-                    fontSize: "0.93rem",
-                    color: "#CBD8D3",
-                    borderBottom: "1px solid rgba(181,223,208,.08)",
-                  }}
-                >
-                  <span style={{ width: 21, height: 21, borderRadius: 5, background: "var(--color-gold)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: "var(--color-slate)", fill: "none", strokeWidth: 2 }}>
-                      <path d="M5 12l5 5L20 7" />
-                    </svg>
-                  </span>
-                  <span>A supporter in <b style={{ color: "var(--color-cream)", fontWeight: 600 }}>{item.region}</b> sponsored a warrior</span>
-                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-space)", fontSize: "0.67rem", color: "var(--color-mint-deep)", whiteSpace: "nowrap" }}>{item.when}</span>
-                </li>
-              ))}
-            </ul>
+            <TickerFeed />
           </div>
         </div>
       </div>
@@ -187,28 +206,16 @@ export default function WaitlistRow() {
           <span
             key={i}
             style={{
-              width: 26,
-              height: 17,
-              borderRadius: 3,
+              width: 26, height: 17, borderRadius: 3, position: "relative", display: "inline-block",
               border: i < funded ? "1px solid var(--color-gold)" : "1px solid rgba(181,223,208,.35)",
               background: i < funded ? "var(--color-gold)" : "transparent",
-              position: "relative",
-              transition: "background .6s ease, border-color .6s ease, transform .3s ease",
-              display: "inline-block",
+              transition: "background .6s ease, border-color .6s ease",
             }}
           >
-            <span
-              style={{
-                position: "absolute",
-                left: 3,
-                top: 5,
-                width: 9,
-                height: 2,
-                borderRadius: 2,
-                background: i < funded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.3)",
-                display: "block",
-              }}
-            />
+            <span style={{
+              position: "absolute", left: 3, top: 5, width: 9, height: 2, borderRadius: 2, display: "block",
+              background: i < funded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.3)",
+            }} />
           </span>
         ))}
       </div>
@@ -221,7 +228,10 @@ export default function WaitlistRow() {
 
       <style>{`
         .glance-top { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px,4vw,52px); align-items: center; }
-        @media (max-width: 760px) { .glance-top { grid-template-columns: 1fr; gap: 24px; } .live-feed-col { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid rgba(181,223,208,0.18); padding-top: 22px; } }
+        @media (max-width: 760px) {
+          .glance-top { grid-template-columns: 1fr; gap: 24px; }
+          .live-feed-col { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid rgba(181,223,208,0.18); padding-top: 22px; }
+        }
       `}</style>
     </div>
   );

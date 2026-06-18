@@ -77,14 +77,15 @@ export default function BenefitTiles() {
         <div className="gives-layout">
           {/* Aside: photo + savings callout */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <ScrollReveal style={{ flex: 1 }}>
+            <ScrollReveal style={{ flex: 1, minHeight: 0 }}>
               <div
                 style={{
                   position: "relative",
                   borderRadius: "var(--radius-card)",
                   overflow: "hidden",
-                  minHeight: 210,
-                  flex: 1,
+                  /* fill all available flex height; fallback minHeight keeps it tall enough on its own */
+                  height: "100%",
+                  minHeight: 320,
                   background: "linear-gradient(135deg,#0C3150,#001E33)",
                   border: "1px solid rgba(181,223,208,0.18)",
                 }}
@@ -92,7 +93,7 @@ export default function BenefitTiles() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   className="photo"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 72%", display: "block" }}
                   src="/images/veteran-family.jpg"
                   alt="A veteran and his family laughing together on a couch at home, wearing a WeSalute shirt"
                 />
