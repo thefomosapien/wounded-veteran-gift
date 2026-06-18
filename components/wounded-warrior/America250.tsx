@@ -76,10 +76,10 @@ export default function America250() {
 
           <ScrollReveal>
             <p style={{ color: "#CBD8D3", maxWidth: "58ch", margin: "22px auto 32px", fontSize: "clamp(1.02rem,1rem + 0.35vw,1.18rem)" }}>
-              Service is the connective tissue of 250 years &mdash; no country reaches this milestone
-              without the people who served. This is how you join the thank you: sponsor a wounded
-              veteran with a full year of WeSalute+. Not a tee shirt. A real gift, for someone who
-              helped carry the country here.
+              America 250 is a celebration worth having &mdash; and the people most responsible for
+              it deserve more than a front-row seat to the fireworks. Wounded veterans sacrificed
+              more than most of us can measure to get this country to this milestone. Sponsoring one
+              with a full year of WeSalute+ is the most direct thank-you we know how to give.
             </p>
           </ScrollReveal>
 
