@@ -1,16 +1,33 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-const FEED = [
-  { region: "Texas",          when: "just now" },
-  { region: "Ohio",           when: "2 min ago" },
-  { region: "California",     when: "7 min ago" },
-  { region: "Georgia",        when: "14 min ago" },
-  { region: "North Carolina", when: "21 min ago" },
-  { region: "Arizona",        when: "33 min ago" },
-  { region: "Florida",        when: "48 min ago" },
-  { region: "Virginia",       when: "1 hr ago" },
+const STATES = [
+  "Texas","California","Florida","New York","Pennsylvania","Ohio","Georgia","North Carolina",
+  "Michigan","New Jersey","Virginia","Washington","Arizona","Tennessee","Massachusetts",
+  "Indiana","Missouri","Maryland","Wisconsin","Colorado","Minnesota","South Carolina",
+  "Alabama","Louisiana","Kentucky","Oregon","Oklahoma","Connecticut","Nevada","Iowa",
+  "Arkansas","Mississippi","Utah","Kansas","New Mexico","Nebraska","West Virginia","Idaho",
+  "Hawaii","Maine","New Hampshire","Rhode Island","Montana","Delaware","Vermont","Wyoming",
 ];
+
+const TIMES = [
+  "just now","just now","1 min ago","2 min ago","3 min ago","5 min ago","7 min ago",
+  "10 min ago","14 min ago","18 min ago","23 min ago","28 min ago","35 min ago","42 min ago","51 min ago",
+];
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function buildFeed(count = 10) {
+  const used = new Set<string>();
+  return Array.from({ length: count }, (_, i) => {
+    let region: string;
+    do { region = pickRandom(STATES); } while (used.has(region));
+    used.add(region);
+    return { region, when: TIMES[Math.min(i, TIMES.length - 1)] };
+  });
+}
 
 const TOTAL  = 30;
 const FUNDED = 9;
@@ -19,7 +36,7 @@ export default function WaitlistRow() {
   const countRef  = useRef<HTMLSpanElement>(null);
   const tickerRef = useRef<HTMLUListElement>(null);
   const [funded, setFunded] = useState(FUNDED);
-  const [tickerOffset, setTickerOffset] = useState(0);
+  const [feed, setFeed] = useState(() => buildFeed(10));
 
   /* count-up */
   useEffect(() => {
@@ -46,28 +63,41 @@ export default function WaitlistRow() {
     return () => io.disconnect();
   }, []);
 
-  /* ticker scroll */
+  /* ticker scroll + new random entries injected periodically */
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
     const ROW_H = 42;
     let idx = 0;
+
     const id = setInterval(() => {
       idx++;
       const list = tickerRef.current;
       if (!list) return;
       list.style.transition = "";
       list.style.transform  = `translateY(-${idx * ROW_H}px)`;
+
       setTimeout(() => {
         const first = list.children[0] as HTMLElement | undefined;
         if (!first) return;
-        list.appendChild(first);
+        /* recycle the scrolled-off item with a fresh random entry */
+        setFeed(prev => {
+          const next = [...prev];
+          next.shift();
+          // pick a state not already in view
+          const inView = new Set(next.map(e => e.region));
+          let region: string;
+          do { region = pickRandom(STATES); } while (inView.has(region));
+          next.push({ region, when: "just now" });
+          return next;
+        });
         list.style.transition = "none";
         idx--;
         list.style.transform = `translateY(-${idx * ROW_H}px)`;
         void list.offsetHeight;
         list.style.transition = "";
       }, 560);
+
       if (idx % 2 === 0) setFunded(f => Math.min(f + 1, TOTAL));
     }, 3200);
 
@@ -120,7 +150,7 @@ export default function WaitlistRow() {
               ref={tickerRef}
               style={{ listStyle: "none", margin: 0, padding: 0, transition: "transform .55s cubic-bezier(.2,.7,.2,1)" }}
             >
-              {FEED.map((item, i) => (
+              {feed.map((item, i) => (
                 <li
                   key={i}
                   style={{

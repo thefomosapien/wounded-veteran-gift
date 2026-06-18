@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ScrollReveal from "./ScrollReveal";
 
 export default function America250() {
@@ -13,28 +14,27 @@ export default function America250() {
         borderTop: "1px solid rgba(181,223,208,0.18)",
       }}
     >
-      {/* Flag image bg */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/america250-flag.jpg"
+      {/* Flag background */}
+      <Image
+        src="/images/us-flag.jpg"
         alt=""
         aria-hidden="true"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 40%", opacity: 0.18 }}
+        fill
+        style={{ objectFit: "cover", objectPosition: "center 40%", opacity: 0.18 }}
+        priority={false}
       />
-      {/* radial overlays */}
+      {/* Dark scrim */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "rgba(0,19,31,.72)", zIndex: 0, pointerEvents: "none" }} />
+      {/* Radial glow overlays */}
       <div
         aria-hidden="true"
         style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(70% 120% at 50% -10%,rgba(255,196,62,.08),transparent 60%), radial-gradient(60% 120% at 50% 120%,rgba(181,223,208,.04),transparent 60%)",
-          pointerEvents: "none",
+          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+          background: "radial-gradient(70% 120% at 50% -10%,rgba(255,196,62,.08),transparent 60%), radial-gradient(60% 120% at 50% 120%,rgba(181,223,208,.04),transparent 60%)",
         }}
       />
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "rgba(0,19,31,.72)", pointerEvents: "none", zIndex: 0 }} />
 
-      <div className="wrap" style={{ position: "relative", zIndex: 1 }}>
+      <div className="wrap" style={{ position: "relative", zIndex: 2 }}>
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
           <ScrollReveal>
@@ -43,10 +43,17 @@ export default function America250() {
             </p>
           </ScrollReveal>
 
+          {/* Co-brand lockup */}
           <ScrollReveal>
-            {/* Fallback text lockup (replace with actual a250 lockup image when available) */}
-            <div style={{ fontFamily: "var(--font-akkurat)", fontWeight: 800, fontSize: "clamp(1.5rem,1.1rem + 1.7vw,2.3rem)", color: "var(--color-cream)", letterSpacing: "-0.01em", marginBottom: 4 }}>
-              WeSalute<span style={{ color: "var(--color-gold)", margin: "0 0.28em" }}>&times;</span>America&nbsp;250
+            <div style={{ width: "min(460px, 84%)", margin: "0 auto" }}>
+              <Image
+                src="/images/a250-cobrand.png"
+                alt="WeSalute × America 250"
+                width={920}
+                height={111}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority={false}
+              />
             </div>
           </ScrollReveal>
 

@@ -14,7 +14,7 @@ export default function ClosingCTA() {
       {/* Closing bg photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/closing-bg.jpg"
+        src="/images/veteran-track.jpg"
         alt=""
         aria-hidden="true"
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: 0.5, display: "block" }}
