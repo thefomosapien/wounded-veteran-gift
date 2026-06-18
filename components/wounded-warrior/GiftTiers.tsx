@@ -51,8 +51,8 @@ export default function GiftTiers() {
               Choose how many names you move
             </h2>
             <p className="lede" style={{ maxWidth: "54ch" }}>
-              Every gift goes straight to a Membership &mdash; nothing held back. Give once, or give
-              monthly to keep names moving off the list all year.
+              Every gift goes straight to a wounded veteran&rsquo;s cost of WeSalute+ &mdash; nothing
+              held back. Give once, or give monthly to keep names moving off the waitlist all year.
             </p>
 
             {/* Frequency toggle */}

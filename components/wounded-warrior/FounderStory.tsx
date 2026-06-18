@@ -12,10 +12,10 @@ export default function FounderStory() {
       <div className="wrap">
         <ScrollReveal style={{ maxWidth: "64ch" }}>
           <span className="eyebrow" style={{ color: "var(--color-gold)" }}>
-            Why WeSalute — and why this is a gift, not charity
+            Why WeSalute &mdash; and why this is a &ldquo;gift&rdquo;
           </span>
           <h2 style={{ fontSize: "clamp(1.8rem,1.4rem + 2vw,2.8rem)", margin: "0.4em 0 0.55em", color: "var(--color-cream)" }}>
-            Built by someone who served, for everyone who has
+            Built by those who have served.
           </h2>
         </ScrollReveal>
 
@@ -26,17 +26,9 @@ export default function FounderStory() {
           {/* Left: narrative + timeline */}
           <div>
             <ScrollReveal>
-              <p style={{ color: "#CBD8D3", marginBottom: "1em" }}>
-                In 1999, Vietnam veteran{" "}
-                <b style={{ color: "var(--color-cream)" }}>Scott Higgins</b> and{" "}
-                <b style={{ color: "var(--color-cream)" }}>Lin Higgins</b> founded Veterans Advantage
-                &mdash; now WeSalute &mdash; as a Public Benefit Corporation built to say thank you to
-                those who serve, every day. WeSalute has spent every year since doing exactly that
-                &mdash; and the Wounded Veteran Program is where that mission gets personal.
-              </p>
               <p style={{ color: "#CBD8D3" }}>
                 <b style={{ color: "var(--color-cream)" }}>
-                  WeSalute has long given more Memberships than the WeSalute Community funds
+                  WeSalute has long given more Memberships than the Community funds
                 </b>
                 , covering the gap so no eligible warrior was turned away. As the need has grown, so
                 has the gap &mdash; which is why your gift matters now.
@@ -49,7 +41,7 @@ export default function FounderStory() {
                     body: (
                       <>
                         As a registered <b>Public Benefit Corporation</b>, WeSalute gives wounded
-                        veterans a free Membership and bridges the funding gap, year after year.
+                        veterans a complimentary Membership and bridges the funding gap, year after year.
                       </>
                     ),
                   },
@@ -58,7 +50,7 @@ export default function FounderStory() {
                     body: (
                       <>
                         The need has outpaced the giving.{" "}
-                        <b>The WeSalute Community can close it</b> &mdash; one gift, one warrior at a time.
+                        <b>You can help close it</b> &mdash; one gift, one warrior at a time.
                       </>
                     ),
                   },
@@ -127,7 +119,7 @@ export default function FounderStory() {
               </span>
 
               <h3 style={{ fontSize: "1.28rem", color: "var(--color-cream)", marginBottom: 16, lineHeight: 1.25 }}>
-                Not a charity. A company measured by who it serves.
+                A company measured by who it serves.
               </h3>
 
               <p style={{ color: "#CBD8D3", fontSize: "0.97rem", marginBottom: 14 }}>

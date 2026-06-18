@@ -31,7 +31,7 @@ const TILES = [
       </svg>
     ),
     title: "Travel & airfare",
-    body: "Airline, hotel, and up to 35% car-rental savings — plus a $3,000 Travel Cash gift.",
+    body: "Airline, hotel, and up to 35% car-rental savings — plus a $3,000 WeSalute Travel Cash Gift.",
     anchor: "Up to 35% on rentals",
   },
   {
@@ -67,8 +67,8 @@ export default function BenefitTiles() {
               A year of WeSalute+, where it&rsquo;s felt most
             </h2>
             <p className="lede" style={{ color: "#CBD8D3", maxWidth: "54ch" }}>
-              A service-connected injury carries hidden, lifelong costs. A Membership won&rsquo;t undo
-              that &mdash; but every month it gives a warrior and their family real relief on the
+              A service-connected injury carries hidden, lifelong costs. Nothing can undo that
+              &mdash; but every month it gives a warrior and their family real relief on the
               expenses that never stop coming.
             </p>
           </div>

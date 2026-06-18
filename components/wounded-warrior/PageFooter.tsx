@@ -67,7 +67,7 @@ export default function PageFooter() {
             color: "#6f8a82",
           }}
         >
-          &copy; 2026 WeSalute &middot; A Public Benefit Corporation since 1999 &middot; The WeSalute
+          &copy; 2026 WeSalute &middot; A Public Benefit Corporation since 2000 &middot; The WeSalute
           Wounded Veteran Program
         </small>
       </div>

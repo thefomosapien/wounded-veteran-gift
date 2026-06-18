@@ -67,7 +67,7 @@ export default function Hero() {
               }}
             >
               A wounded veteran is waiting. Your gift{" "}
-              <span style={{ color: "var(--color-gold)" }}>moves them up the list.</span>
+              <span style={{ color: "var(--color-gold)" }}>is what moves the line.</span>
             </h1>
 
             <p
@@ -78,9 +78,9 @@ export default function Hero() {
                 lineHeight: 1.5,
               }}
             >
-              For 27 years, the WeSalute Community has given wounded veterans a full year of
-              WeSalute+, free. Today more warriors qualify than we can fund &mdash; so there&rsquo;s
-              a waitlist. One gift sponsors one veteran. That&rsquo;s how a name comes off it.
+              WeSalute has always given wounded veterans a full year of WeSalute+
+              complimentary. Today more warriors qualify than we can fund &mdash; so your
+              contribution can ensure we never have a waitlist.
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 22 }}>

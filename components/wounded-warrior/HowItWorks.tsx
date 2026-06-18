@@ -4,7 +4,7 @@ const STEPS = [
   {
     idx: "STEP 01",
     title: "You give",
-    body: "Choose a gift. $64.95 covers one wounded veteran's full year of WeSalute+ — the same Membership a paying Member receives.",
+    body: "Choose a gift amount. $64.95 covers one wounded veteran's full year of WeSalute+ — they receive all the same benefits.",
     featured: false,
   },
   {
@@ -16,7 +16,7 @@ const STEPS = [
   {
     idx: "STEP 03",
     title: "The Membership goes to work",
-    body: "For a full year they unlock real savings on travel, everyday essentials, and the moments that bring a family back together.",
+    body: "For a full year they unlock real savings on travel, everyday essentials, and the moments that matter most.",
     featured: false,
   },
 ];
@@ -35,14 +35,13 @@ export default function HowItWorks() {
       <div className="wrap">
         <ScrollReveal>
           <div style={{ maxWidth: "60ch" }}>
-            <span className="eyebrow" style={{ color: "var(--color-gold-deep)" }}>One gift, one warrior</span>
+            <span className="eyebrow" style={{ color: "var(--color-gold-deep)" }}>Your support matters</span>
             <h2 style={{ fontSize: "clamp(1.9rem,1.5rem + 2.2vw,3.1rem)", margin: "0.42em 0 0.5em" }}>
-              How your gift becomes a Membership
+              How your gift becomes a WeSalute+ Membership
             </h2>
             <p className="lede" style={{ maxWidth: "54ch" }}>
-              No overhead math, no abstraction. A gift here does one specific thing: it puts a
-              WeSalute+ Membership in the hands of a wounded veteran who deserves it. This is
-              the WeSalute Community&rsquo;s way of delivering A Real Thank You<sup>®</sup>.
+              A gift here does one specific thing: it puts WeSalute+ in the hands of a wounded
+              veteran who deserves it.
             </p>
           </div>
         </ScrollReveal>
@@ -133,7 +132,7 @@ export default function HowItWorks() {
               <b style={{ color: "var(--color-gold)" }}>$64.95</b> sponsors one warrior for one full year.
             </div>
             <p style={{ color: "#CBD8D3", maxWidth: "42ch", fontSize: "1rem" }}>
-              That&rsquo;s the true cost of a Membership &mdash; not a suggested amount. One gift, one year, one warrior welcomed.
+              That&rsquo;s the true cost of WeSalute+ &mdash; not a suggested amount. One gift, one year, one warrior welcomed.
             </p>
           </div>
         </ScrollReveal>
