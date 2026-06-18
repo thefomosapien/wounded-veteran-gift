@@ -23,8 +23,12 @@ const INITIAL_FEED = [
   { region: "Washington",     when: "1 hr ago"   },
 ];
 
-const TOTAL  = 10;
-const FUNDED = 3;
+/* The card field is a symbolic "bucket": a large need (TOTAL marks), only a
+   small share funded (FUNDED). It creeps upward but caps at CAP — well short of
+   full — so the gap never closes and the shortfall always stays visible. */
+const TOTAL  = 84;
+const FUNDED = 15;
+const CAP    = 27;
 
 /* ── Ticker is memoized so React never re-renders it after mount.
    All animation is pure DOM — no state, no re-render interference. ── */
@@ -148,13 +152,16 @@ export default function WaitlistRow() {
     return () => io.disconnect();
   }, []);
 
-  /* card-glyph fill — runs independently of ticker */
+  /* card-glyph fill — one more card commits every few seconds, but only up to
+     CAP so the gap is never closed. Runs independently of the ticker. */
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => setFunded(f => Math.min(f + 1, TOTAL)), 6400);
-    const t  = setTimeout(() => setFunded(f => Math.min(f + 1, TOTAL)), 1600);
+    const id = setInterval(() => setFunded(f => Math.min(f + 1, CAP)), 5200);
+    const t  = setTimeout(() => setFunded(f => Math.min(f + 1, CAP)), 2400);
     return () => { clearInterval(id); clearTimeout(t); };
   }, []);
+
+  const remaining = TOTAL - funded;
 
   return (
     <div style={{ marginTop: "clamp(20px,3vw,30px)", borderTop: "1px solid rgba(181,223,208,0.18)", paddingTop: 20 }}>
@@ -196,36 +203,41 @@ export default function WaitlistRow() {
         </div>
       </div>
 
-      {/* card glyphs */}
+      {/* card field — the "bucket": mostly empty, slowly filling, never full */}
       <div
         role="img"
-        aria-label="Sponsorship progress: funded spots shown in gold, waiting spots shown as outlines"
+        aria-label={`Sponsorship shortfall: ${funded} of ${TOTAL} Memberships funded, ${remaining} wounded veterans still waiting`}
         className="card-grid"
       >
         {Array.from({ length: TOTAL }, (_, i) => {
-          const isFunded  = i < funded;
-          const isPending = i === funded;
+          const isFunded   = i < funded;
+          const isFrontier = i === funded;
+          const cls = isFunded
+            ? "card-glyph card-funded"
+            : isFrontier
+              ? "card-glyph card-frontier"
+              : "card-glyph";
           return (
-            <span
-              key={i}
-              className={isPending ? "card-glyph card-loading" : "card-glyph"}
-              style={{
-                borderColor: isFunded ? "var(--color-gold)" : undefined,
-                background:  isFunded ? "var(--color-gold)" : undefined,
-              }}
-            >
-              <span className="card-stripe" style={{
-                background: isFunded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.3)",
-              }} />
+            <span key={i} className={cls}>
+              {isFrontier ? (
+                <span className="card-fill" aria-hidden="true" />
+              ) : (
+                <span
+                  className="card-stripe"
+                  style={{ background: isFunded ? "rgba(0,30,51,.45)" : "rgba(181,223,208,.28)" }}
+                />
+              )}
             </span>
           );
         })}
       </div>
 
-      <p style={{ marginTop: 18, fontSize: "0.96rem", color: "#C7D4CF", maxWidth: "62ch" }}>
-        Each mark is a Membership. An estimated{" "}
+      <p style={{ marginTop: 18, fontSize: "0.96rem", color: "#C7D4CF", maxWidth: "64ch" }}>
+        Every gold card is a Membership funded this year. The outlines are the gap that&rsquo;s
+        left &mdash; an estimated{" "}
         <span style={{ color: "var(--color-gold)", fontWeight: 700, borderBottom: "1.5px dashed rgba(255,196,62,.5)", paddingBottom: 1 }}>5.1&nbsp;million+</span>{" "}
-        wounded veterans with a 30%+ service-connected disability are eligible &mdash; and many are on the list right now. Watch a spot fill, and that&rsquo;s one name welcomed.
+        wounded veterans with a 30%+ service-connected disability qualify, and the need keeps
+        outpacing the giving. Each gift fills one more card &mdash; we just need everyone to pitch in.
       </p>
 
       <style>{`
@@ -235,11 +247,12 @@ export default function WaitlistRow() {
           .live-feed-col { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid rgba(181,223,208,0.18); padding-top: 22px; }
         }
 
-        /* card glyph grid — always 10 columns, fills full width */
+        /* card field — responsive: columns auto-fill and scale with width, so
+           the whole "bucket" of need stays on screen at a comfortable size */
         .card-grid {
           display: grid;
-          grid-template-columns: repeat(10, 1fr);
-          gap: clamp(6px, 1vw, 10px);
+          grid-template-columns: repeat(auto-fill, minmax(clamp(26px, 3.4vw, 40px), 1fr));
+          gap: clamp(5px, 0.8vw, 9px);
           margin-top: 18px;
         }
         .card-glyph {
@@ -247,46 +260,59 @@ export default function WaitlistRow() {
           position: relative;
           aspect-ratio: 1.586 / 1;
           border-radius: 4px;
-          border: 1.5px solid rgba(181,223,208,.35);
+          border: 1.5px solid rgba(181,223,208,.32);
           background: transparent;
+          overflow: hidden;
           transition: background .6s ease, border-color .6s ease;
+        }
+        .card-funded {
+          border-color: var(--color-gold);
+          background: var(--color-gold);
         }
         .card-stripe {
           position: absolute;
           left: 18%;
-          top: 38%;
+          top: 40%;
           width: 40%;
-          height: 14%;
+          height: 13%;
           border-radius: 2px;
           display: block;
         }
 
-        /* spinning-arc loading border */
-        @property --ba {
-          syntax: '<angle>';
-          inherits: false;
-          initial-value: 0turn;
+        /* frontier card — the one being "filled" right now: gold liquid rises
+           and bobs like a bucket taking on water, with a shimmer sweep */
+        .card-frontier {
+          border-color: var(--color-gold);
+          box-shadow: 0 0 0 1px rgba(255,196,62,.25), 0 0 14px -2px rgba(255,196,62,.5);
         }
-        @keyframes borderSpin {
-          to { --ba: 1turn; }
+        .card-fill {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 45%;
+          background: linear-gradient(to top, var(--color-gold) 0%, rgba(255,196,62,.55) 100%);
+          animation: cardFillBob 2.4s ease-in-out infinite;
         }
-        .card-loading {
-          border: 1.5px solid transparent;
-          background:
-            conic-gradient(from var(--ba),
-              rgba(255,196,62,0) 0%,
-              rgba(255,196,62,0) 60%,
-              rgba(255,196,62,.9) 80%,
-              rgba(255,196,62,0) 100%
-            ) border-box,
-            rgba(255,196,62,.06) padding-box;
-          animation: borderSpin 1.8s linear infinite;
+        .card-frontier::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.4) 50%, transparent 65%);
+          transform: translateX(-120%);
+          animation: cardSweep 2.1s ease-in-out infinite;
+        }
+        @keyframes cardFillBob {
+          0%, 100% { height: 38%; }
+          50%      { height: 64%; }
+        }
+        @keyframes cardSweep {
+          0%   { transform: translateX(-120%); }
+          100% { transform: translateX(120%); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .card-loading {
-            border-color: rgba(255,196,62,.5);
-            animation: none;
-          }
+          .card-fill { animation: none; height: 50%; }
+          .card-frontier::after { display: none; }
         }
       `}</style>
     </div>
