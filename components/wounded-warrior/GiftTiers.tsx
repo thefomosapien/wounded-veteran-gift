@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 
-type Freq = "once" | "monthly";
+type Freq = "once" | "recurring";
 
 const TIERS = [
   {
@@ -22,7 +22,7 @@ const TIERS = [
     cta: "Sponsor a warrior",
     dataCta: "tier-65",
     featured: true,
-    ribbon: "Most impactful",
+    ribbon: "Most popular",
   },
   {
     kicker: "Sponsor two",
@@ -32,6 +32,7 @@ const TIERS = [
     cta: "Sponsor two warriors",
     dataCta: "tier-130",
     featured: false,
+    ribbon: "Most impactful",
   },
 ];
 
@@ -69,7 +70,7 @@ export default function GiftTiers() {
                 gap: 4,
               }}
             >
-              {(["once", "monthly"] as Freq[]).map((f) => (
+              {(["once", "recurring"] as Freq[]).map((f) => (
                 <button
                   key={f}
                   aria-pressed={freq === f}
@@ -87,7 +88,7 @@ export default function GiftTiers() {
                     transition: "background .2s ease, color .2s ease",
                   }}
                 >
-                  {f === "once" ? "One-time gift" : "Give monthly"}
+                  {f === "once" ? "One-time gift" : "Recurring gift"}
                 </button>
               ))}
             </div>
@@ -140,7 +141,7 @@ export default function GiftTiers() {
                 <div style={{ fontFamily: "var(--font-akkurat)", fontWeight: 800, fontSize: "clamp(2.1rem,1.8rem + 1.4vw,2.7rem)", letterSpacing: "-0.02em", margin: "8px 0 2px", color: "var(--color-slate)", lineHeight: 1 }}>
                   {tier.amount}
                   <span style={{ display: "block", marginTop: 6, fontFamily: "var(--font-space)", fontSize: "0.72rem", fontWeight: 400, color: "var(--color-ink-soft)", letterSpacing: "0.04em" }}>
-                    {freq === "monthly" ? `${tier.per} / mo` : tier.per}
+                    {freq === "recurring" ? `${tier.per} · annually` : tier.per}
                   </span>
                 </div>
 
@@ -183,16 +184,10 @@ export default function GiftTiers() {
               <strong>Choose your own amount.</strong> Give what feels right &mdash; every dollar helps bridge the gap
               and gets a waiting warrior closer to the support they deserve.
             </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <span style={{ display: "flex", alignItems: "center" }}>
-                <span style={{ fontFamily: "var(--font-akkurat)", fontWeight: 700, fontSize: "1.3rem", padding: "0.45em 0.5em 0.45em 0.7em", background: "var(--color-slate)", color: "var(--color-cream)", borderRadius: "var(--radius-btn) 0 0 var(--radius-btn)" }}>$</span>
-                <span style={{ fontStyle: "normal", fontFamily: "var(--font-space)", color: "var(--color-ink-soft)", border: "1px solid rgba(0,30,51,0.12)", borderLeft: 0, borderRadius: "0 var(--radius-btn) var(--radius-btn) 0", padding: "0.7em 1em", background: "#fff" }}>Other amount</span>
-              </span>
-              {/* TODO: wire to payment flow */}
-              <a href="#" className="btn btn-ghost-dark" data-cta="tier-other" data-payment="placeholder">
-                Give <span className="arw" aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
+            {/* TODO: wire to payment flow */}
+            <a href="#" className="btn btn-ghost-dark" data-cta="tier-other" data-payment="placeholder">
+              Choose Your Own Amount to Give <span className="arw" aria-hidden="true">&rarr;</span>
+            </a>
           </div>
         </ScrollReveal>
       </div>
