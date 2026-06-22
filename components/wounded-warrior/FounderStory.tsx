@@ -21,7 +21,7 @@ export default function FounderStory() {
           position: "absolute",
           right: "-2%",
           bottom: "-5%",
-          width: "clamp(260px, 36vw, 500px)",
+          width: "clamp(380px, 52vw, 760px)",
           height: "auto",
           opacity: 0.1,
           // boots are filled in slate (#001E33) — invert to a light tint so they read on the dark bg
