@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   title: "Sponsor a Wounded Veteran — WeSalute Wounded Veteran Program",
   description:
     "One gift sponsors one wounded veteran with a full year of WeSalute+. The need has outpaced the giving — your gift moves a name off the waitlist.",
-  icons: { icon: "/favicon.png" },
   openGraph: {
     title: "Sponsor a Wounded Veteran — WeSalute Wounded Veteran Program",
     description:
