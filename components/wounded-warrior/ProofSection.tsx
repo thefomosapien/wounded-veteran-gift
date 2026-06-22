@@ -2,19 +2,16 @@ import ScrollReveal from "./ScrollReveal";
 
 const STATS = [
   {
-    n: "[5.1M+]",
+    n: "5.1M+",
     label: "Eligible wounded veterans with a 30%+ service-connected disability.",
-    src: "// PLACEHOLDER — confirm figure",
   },
   {
-    n: "[300K+]",
+    n: "300K+",
     label: "New disabled veterans every year, with a 30%+ service-connected disability.",
-    src: "// PLACEHOLDER — confirm figure",
   },
   {
-    n: "[418+]",
+    n: "418+",
     label: "Memberships gifted this year — with many warriors still waiting.",
-    src: "// PLACEHOLDER — confirm figure",
   },
 ];
 
@@ -55,9 +52,6 @@ export default function ProofSection() {
                 </div>
                 <div style={{ marginTop: 10, fontSize: "0.98rem", color: "#1c3140", maxWidth: "30ch" }}>
                   {stat.label}
-                  <span style={{ display: "block", marginTop: 8, fontFamily: "var(--font-space)", fontSize: "0.66rem", letterSpacing: "0.06em", color: "#3a5161" }}>
-                    {stat.src}
-                  </span>
                 </div>
               </div>
             </ScrollReveal>

@@ -96,8 +96,8 @@ export default function HowItWorks() {
                     width: 46,
                     height: 46,
                     borderRadius: 12,
-                    border: step.featured ? "1px solid var(--color-gold)" : "1px solid rgba(232,172,44,.32)",
-                    background: step.featured ? "var(--color-gold)" : "rgba(232,172,44,.10)",
+                    border: step.featured ? "1px solid var(--color-gold)" : "1px solid rgba(232,172,44,.5)",
+                    background: step.featured ? "var(--color-gold)" : "rgba(232,172,44,.2)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -109,9 +109,9 @@ export default function HowItWorks() {
                     style={{
                       width: 24,
                       height: 24,
-                      stroke: step.featured ? "var(--color-slate)" : "var(--color-gold-deep)",
+                      stroke: "var(--color-slate)",
                       fill: "none",
-                      strokeWidth: 1.6,
+                      strokeWidth: 1.7,
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
                     }}

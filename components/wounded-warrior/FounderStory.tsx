@@ -10,13 +10,49 @@ export default function FounderStory() {
       }}
     >
       <div className="wrap">
-        <ScrollReveal style={{ maxWidth: "64ch" }}>
-          <span className="eyebrow" style={{ color: "var(--color-gold)" }}>
-            Why WeSalute &mdash; and why this is a &ldquo;gift&rdquo;
-          </span>
-          <h2 style={{ fontSize: "clamp(1.8rem,1.4rem + 2vw,2.8rem)", margin: "0.4em 0 0.55em", color: "var(--color-cream)" }}>
-            Built by those who have served.
-          </h2>
+        <ScrollReveal>
+          <div className="story-head">
+            <div style={{ maxWidth: "64ch" }}>
+              <span className="eyebrow" style={{ color: "var(--color-gold)" }}>
+                Why WeSalute &mdash; and why this is a &ldquo;gift&rdquo;
+              </span>
+              <h2 style={{ fontSize: "clamp(1.8rem,1.4rem + 2vw,2.8rem)", margin: "0.4em 0 0.55em", color: "var(--color-cream)" }}>
+                Built by those who have served.
+              </h2>
+            </div>
+
+            {/* combat boots — line illustration */}
+            <svg
+              className="story-boots"
+              viewBox="0 0 170 116"
+              role="img"
+              aria-label="Line illustration of a pair of combat boots"
+              style={{ fill: "none", strokeLinecap: "round", strokeLinejoin: "round" }}
+            >
+              {/* back boot */}
+              <g
+                transform="translate(46 -2) scale(.88)"
+                stroke="var(--color-mint)"
+                strokeWidth="2"
+                opacity="0.4"
+              >
+                <path d="M44 18 H70 V74 L66 82 H16 L18 76 L44 54 Z" />
+                <path d="M13 82 H68 Q72 82 72 87 Q72 92 66 92 H18 Q11 92 11 87 Q11 82 13 82 Z" />
+                <path d="M39 28 L51 26 M39 36 L51 34 M39 44 L51 42 M39 52 L51 50" />
+              </g>
+              {/* front boot */}
+              <g stroke="var(--color-gold)" strokeWidth="2">
+                <path d="M44 18 H70 V74 L66 82 H16 L18 76 L44 54 Z" />
+                <path d="M13 82 H68 Q72 82 72 87 Q72 92 66 92 H18 Q11 92 11 87 Q11 82 13 82 Z" />
+                <path d="M39 28 L51 26 M39 36 L51 34 M39 44 L51 42 M39 52 L51 50" />
+                <circle cx="44" cy="27" r="1.1" fill="var(--color-gold)" stroke="none" />
+                <circle cx="44" cy="35" r="1.1" fill="var(--color-gold)" stroke="none" />
+                <circle cx="44" cy="43" r="1.1" fill="var(--color-gold)" stroke="none" />
+                <circle cx="44" cy="51" r="1.1" fill="var(--color-gold)" stroke="none" />
+                <path d="M20 92 V96 M30 92 V96 M40 92 V96 M50 92 V96 M60 92 V96" />
+              </g>
+            </svg>
+          </div>
         </ScrollReveal>
 
         <div
@@ -151,6 +187,13 @@ export default function FounderStory() {
       </div>
 
       <style>{`
+        .story-head { display: flex; align-items: center; justify-content: space-between; gap: clamp(24px,4vw,56px); }
+        .story-boots { width: clamp(140px, 18vw, 210px); height: auto; flex-shrink: 0; }
+        @media (max-width: 720px) {
+          .story-head { flex-direction: column-reverse; align-items: flex-start; gap: 20px; }
+          .story-boots { width: 150px; }
+        }
+
         .history-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px,5vw,64px); align-items: start; }
         @media (max-width: 880px) { .history-grid { grid-template-columns: 1fr; gap: 34px; } }
       `}</style>
