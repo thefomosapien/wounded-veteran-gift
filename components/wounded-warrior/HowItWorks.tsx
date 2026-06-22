@@ -4,18 +4,46 @@ const STEPS = [
   {
     idx: "STEP 01",
     title: "You give",
+    // gift box — the act of giving
+    icon: (
+      <>
+        <rect x="3" y="8" width="18" height="13" rx="1.5" />
+        <path d="M3 12h18" />
+        <path d="M12 8v13" />
+        <path d="M12 8S10.5 3.8 8 4.2C6.4 4.5 6.2 6.6 7.6 7.4 8.8 8 12 8 12 8z" />
+        <path d="M12 8s1.5-4.2 4-3.8c1.6.3 1.8 2.4.4 3.2C15.2 8 12 8 12 8z" />
+      </>
+    ),
     body: "Choose a gift amount. $64.95 covers one wounded veteran's full year of WeSalute+ — they receive all the same benefits.",
     featured: false,
   },
   {
     idx: "STEP 02",
     title: "A warrior is welcomed",
+    // ID card — the member being enrolled and issued their card
+    icon: (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <circle cx="8.5" cy="11" r="2" />
+        <path d="M5.5 16c.4-1.6 1.6-2.5 3-2.5s2.6.9 3 2.5" />
+        <path d="M14.5 9.5h4" />
+        <path d="M14.5 12.5h4" />
+        <path d="M14.5 15h2.5" />
+      </>
+    ),
     body: "A wounded veteran on the list is enrolled and issued their WeSalute+ ID Card — moved from waiting to welcomed, because of you.",
     featured: true,
   },
   {
     idx: "STEP 03",
     title: "The Membership goes to work",
+    // sparkle — the year of savings and benefits unlocked
+    icon: (
+      <>
+        <path d="M12 3l1.8 4.7L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3z" />
+        <path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z" />
+      </>
+    ),
     body: "For a full year they unlock real savings on travel, everyday essentials, and the moments that matter most.",
     featured: false,
   },
@@ -61,30 +89,35 @@ export default function HowItWorks() {
                   boxSizing: "border-box",
                 }}
               >
-                {/* glyph — ID card icon */}
+                {/* icon — corresponds to the step's content */}
                 <div
                   aria-hidden="true"
                   style={{
-                    width: 40,
-                    height: 26,
-                    borderRadius: 5,
-                    border: step.featured ? "1.5px solid var(--color-gold)" : "1.5px solid var(--color-slate)",
-                    background: step.featured ? "var(--color-gold)" : "transparent",
+                    width: 46,
+                    height: 46,
+                    borderRadius: 12,
+                    border: step.featured ? "1px solid var(--color-gold)" : "1px solid rgba(232,172,44,.32)",
+                    background: step.featured ? "var(--color-gold)" : "rgba(232,172,44,.10)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    marginBottom: 4,
+                    marginBottom: 16,
                   }}
                 >
-                  <span
+                  <svg
+                    viewBox="0 0 24 24"
                     style={{
-                      width: 11,
-                      height: 8,
-                      borderRadius: 2,
-                      background: step.featured ? "var(--color-slate)" : "var(--color-mint-deep)",
-                      display: "inline-block",
+                      width: 24,
+                      height: 24,
+                      stroke: step.featured ? "var(--color-slate)" : "var(--color-gold-deep)",
+                      fill: "none",
+                      strokeWidth: 1.6,
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
                     }}
-                  />
+                  >
+                    {step.icon}
+                  </svg>
                 </div>
 
                 <div
