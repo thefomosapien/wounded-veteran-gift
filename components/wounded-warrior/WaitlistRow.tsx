@@ -150,12 +150,14 @@ export default function WaitlistRow() {
         <span className="eyebrow" style={{ color: "var(--color-mint)" }}>This year, at a glance</span>
         <span style={{ fontFamily: "var(--font-space)", fontSize: "0.7rem", color: "#8FC9B6", letterSpacing: "0.04em", display: "flex", gap: 18 }}>
           <i style={{ fontStyle: "normal", display: "inline-flex", alignItems: "center", gap: 7 }}>
-            <span style={{ width: 13, height: 9, borderRadius: 2, background: "var(--color-gold)", display: "inline-block" }} aria-hidden="true" />
-            <span>Sponsored <span className="sr-only">(shown in gold)</span></span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/card-icon.svg" alt="" aria-hidden="true" style={{ width: 22, height: "auto", display: "block", opacity: 1 }} />
+            <span>Sponsored <span className="sr-only">(shown as full card)</span></span>
           </i>
           <i style={{ fontStyle: "normal", display: "inline-flex", alignItems: "center", gap: 7 }}>
-            <span style={{ width: 13, height: 9, borderRadius: 2, border: "1px solid rgba(181,223,208,.4)", display: "inline-block" }} aria-hidden="true" />
-            <span>Still waiting <span className="sr-only">(shown as outline)</span></span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/card-icon.svg" alt="" aria-hidden="true" style={{ width: 22, height: "auto", display: "block", filter: "grayscale(1)", opacity: 0.28 }} />
+            <span>Still waiting <span className="sr-only">(shown as faded card)</span></span>
           </i>
         </span>
       </div>
