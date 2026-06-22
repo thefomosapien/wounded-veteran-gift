@@ -10,10 +10,23 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://wounded-veteran-gift.vercel.app"
+  ),
   title: "Sponsor a Wounded Veteran — WeSalute Wounded Veteran Program",
   description:
     "One gift sponsors one wounded veteran with a full year of WeSalute+. The need has outpaced the giving — your gift moves a name off the waitlist.",
   icons: { icon: "/favicon.png" },
+  openGraph: {
+    title: "Sponsor a Wounded Veteran — WeSalute Wounded Veteran Program",
+    description:
+      "One gift sponsors one wounded veteran with a full year of WeSalute+. The need has outpaced the giving — your gift moves a name off the waitlist.",
+    images: [{ url: "/images/wounded-vet-program.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/images/wounded-vet-program.png"],
+  },
 };
 
 export default function RootLayout({
