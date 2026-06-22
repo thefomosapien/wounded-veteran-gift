@@ -98,7 +98,7 @@ export default function GiftTiers() {
         {/* Tier cards */}
         <div className="tiers-grid">
           {TIERS.map((tier) => (
-            <ScrollReveal key={tier.dataCta}>
+            <ScrollReveal key={tier.dataCta} style={{ height: "100%" }}>
               <div
                 style={{
                   background: tier.featured ? "#fff" : "var(--color-paper)",
@@ -108,6 +108,8 @@ export default function GiftTiers() {
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
+                  height: "100%",
+                  boxSizing: "border-box",
                   transition: "transform .2s ease, box-shadow .2s ease, border-color .2s ease",
                   boxShadow: tier.featured ? "0 18px 50px -26px rgba(232,172,44,.5)" : "none",
                 }}
@@ -119,7 +121,7 @@ export default function GiftTiers() {
                       position: "absolute",
                       top: -12,
                       left: 24,
-                      background: "var(--color-gold)",
+                      background: tier.ribbon === "Most impactful" ? "var(--color-mint)" : "var(--color-gold)",
                       color: "var(--color-slate)",
                       fontFamily: "var(--font-space)",
                       fontWeight: 700,
@@ -141,7 +143,7 @@ export default function GiftTiers() {
                 <div style={{ fontFamily: "var(--font-akkurat)", fontWeight: 800, fontSize: "clamp(2.1rem,1.8rem + 1.4vw,2.7rem)", letterSpacing: "-0.02em", margin: "8px 0 2px", color: "var(--color-slate)", lineHeight: 1 }}>
                   {tier.amount}
                   <span style={{ display: "block", marginTop: 6, fontFamily: "var(--font-space)", fontSize: "0.72rem", fontWeight: 400, color: "var(--color-ink-soft)", letterSpacing: "0.04em" }}>
-                    {freq === "recurring" ? `${tier.per} · annually` : tier.per}
+                    {freq === "recurring" ? (tier.per === "one-time" ? "annually" : `${tier.per} · annually`) : tier.per}
                   </span>
                 </div>
 
@@ -180,10 +182,10 @@ export default function GiftTiers() {
               padding: "20px 24px",
             }}
           >
-            <p style={{ color: "var(--color-ink-soft)", fontSize: "0.96rem", maxWidth: "48ch" }}>
-              <strong>Choose your own amount.</strong> Give what feels right &mdash; every dollar helps bridge the gap
-              and gets a waiting warrior closer to the support they deserve.
-            </p>
+            <div style={{ color: "var(--color-ink-soft)", fontSize: "0.96rem", maxWidth: "48ch" }}>
+              <p style={{ margin: "0 0 8px" }}><strong>Choose your own amount.</strong></p>
+              <p style={{ margin: 0 }}>Give what feels right &mdash; every dollar helps bridge the gap and gets a waiting warrior closer to the support they deserve.</p>
+            </div>
             {/* TODO: wire to payment flow */}
             <a href="#" className="btn btn-ghost-dark" data-cta="tier-other" data-payment="placeholder">
               Choose Your Own Amount to Give <span className="arw" aria-hidden="true">&rarr;</span>
@@ -193,7 +195,7 @@ export default function GiftTiers() {
       </div>
 
       <style>{`
-        .tiers-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(16px,2vw,22px); margin-top: clamp(28px,3.5vw,40px); }
+        .tiers-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(16px,2vw,22px); margin-top: clamp(28px,3.5vw,40px); align-items: stretch; }
         @media (max-width: 860px) { .tiers-grid { grid-template-columns: 1fr; } }
         .tier-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px -28px rgba(0,19,31,0.55) !important; }
       `}</style>
