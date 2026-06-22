@@ -123,6 +123,8 @@ export default function Hero() {
                 <img
                   src="/images/hero-veteran.jpg"
                   alt="A woman veteran in a wheelchair along a riverside path at sunset, wearing a WeSalute shirt"
+                  fetchPriority="high"
+                  decoding="async"
                   style={{
                     display: "block",
                     width: "100%",

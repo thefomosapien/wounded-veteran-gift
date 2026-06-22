@@ -19,7 +19,7 @@ export default function HomePage() {
       <TopBar />
 
       <main id="top">
-        <div id="main-content">
+        <div id="main-content" tabIndex={-1} style={{ outline: "none" }}>
           <Hero />
           <HowItWorks />
           <BenefitTiles />

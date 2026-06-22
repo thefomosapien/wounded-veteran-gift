@@ -96,6 +96,7 @@ export default function America250() {
                 rel="noopener noreferrer"
               >
                 Explore WeSalute &times; America 250
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </div>
           </ScrollReveal>

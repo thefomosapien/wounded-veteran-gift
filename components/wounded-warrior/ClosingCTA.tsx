@@ -6,11 +6,13 @@ export default function ClosingCTA() {
       <div className="closing-grid">
 
         {/* Left — veteran photo, full bleed */}
-        <div style={{ position: "relative", overflow: "hidden", minHeight: "clamp(380px,50vw,640px)" }}>
+        <figure className="closing-media" style={{ position: "relative", overflow: "hidden", minHeight: "clamp(380px,50vw,640px)", margin: 0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/veteran-track.jpg"
             alt="A veteran with a prosthetic leg kneeling on a running track, wearing a WeSalute shirt"
+            loading="lazy"
+            decoding="async"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", display: "block" }}
           />
           {/* Gradient fades the right edge into the dark panel */}
@@ -24,7 +26,7 @@ export default function ClosingCTA() {
           }}>
             A wounded veteran in the WeSalute Community
           </figcaption>
-        </div>
+        </figure>
 
         {/* Right — CTA copy */}
         <div style={{
@@ -97,7 +99,7 @@ export default function ClosingCTA() {
         }
         @media (max-width: 860px) {
           .closing-grid { grid-template-columns: 1fr; }
-          .closing-grid > div:first-child { min-height: 300px; }
+          .closing-media { min-height: 300px; }
         }
       `}</style>
     </section>

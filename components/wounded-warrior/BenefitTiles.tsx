@@ -93,6 +93,8 @@ export default function BenefitTiles() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   className="photo"
+                  loading="lazy"
+                  decoding="async"
                   style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 72%", display: "block" }}
                   src="/images/veteran-family.jpg"
                   alt="A veteran and his family laughing together on a couch at home, wearing a WeSalute shirt"
