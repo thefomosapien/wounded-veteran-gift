@@ -23,7 +23,9 @@ export default function FounderStory() {
           bottom: "-5%",
           width: "clamp(260px, 36vw, 500px)",
           height: "auto",
-          opacity: 0.07,
+          opacity: 0.1,
+          // boots are filled in slate (#001E33) — invert to a light tint so they read on the dark bg
+          filter: "brightness(0) invert(1)",
           pointerEvents: "none",
           userSelect: "none",
         }}
