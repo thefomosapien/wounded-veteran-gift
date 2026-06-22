@@ -148,117 +148,25 @@ export default function Hero() {
               </div>
 
               {/* ID Card — bleeds outside the photo frame */}
-              <div
-                role="img"
-                aria-label="WeSalute+ ID Card — Issued by your gift"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/wounded-vet-card.svg"
+                alt="WeSalute+ Wounded Veteran Program ID Card — issued by your gift"
+                className="hero-id-card"
                 style={{
                   position: "absolute",
                   bottom: 0,
                   left: -10,
                   zIndex: 2,
-                  width: "min(230px, 56%)",
-                  background: "linear-gradient(150deg,#0D3A58 0%,#001E33 100%)",
-                  border: "1px solid rgba(181,223,208,.3)",
+                  width: "min(260px, 60%)",
+                  height: "auto",
+                  display: "block",
                   borderRadius: 12,
-                  padding: "14px 16px 13px",
-                  color: "var(--color-cream)",
-                  boxShadow:
-                    "0 22px 48px -8px rgba(0,10,18,.75), 0 8px 16px -6px rgba(0,10,18,.55), inset 0 1px 0 rgba(255,255,255,.07)",
+                  filter: "drop-shadow(0 22px 40px rgba(0,10,18,.7)) drop-shadow(0 8px 16px rgba(0,10,18,.5))",
                   transform: "rotate(-4deg) translateY(6px)",
-                  transition: "transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease",
-                  backdropFilter: "blur(2px)",
+                  transition: "transform .4s cubic-bezier(.2,.7,.2,1)",
                 }}
-                className="hero-id-card"
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <span style={{ fontFamily: "var(--font-akkurat)", fontWeight: 800, fontSize: "0.95rem", letterSpacing: "-0.01em" }}>
-                    We<b style={{ color: "var(--color-gold)" }}>Salute+</b>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: 32,
-                      height: 23,
-                      borderRadius: 5,
-                      background: "linear-gradient(135deg,var(--color-mint),var(--color-mint-deep))",
-                      opacity: 0.9,
-                      position: "relative",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: "absolute",
-                        inset: 5,
-                        border: "1px solid rgba(0,30,51,.35)",
-                        borderRadius: 2,
-                        display: "block",
-                      }}
-                    />
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 13,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    fontFamily: "var(--font-space)",
-                    fontWeight: 700,
-                    fontSize: "0.58rem",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "var(--color-gold)",
-                    border: "1.5px solid var(--color-gold)",
-                    borderRadius: 4,
-                    padding: "4px 7px",
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: "var(--color-gold)",
-                      animation: "goldPulse 2s infinite",
-                      display: "inline-block",
-                    }}
-                  />
-                  Issued by your gift
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 11,
-                    fontFamily: "var(--font-space)",
-                    fontSize: "0.55rem",
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "var(--color-mint-deep)",
-                  }}
-                >
-                  Wounded Veteran Program
-                </div>
-                <div style={{ marginTop: 3, fontWeight: 700, fontSize: "0.9rem", letterSpacing: "0.005em" }}>
-                  [ Service Member ]
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: 9,
-                    fontFamily: "var(--font-space)",
-                    fontSize: "0.55rem",
-                    letterSpacing: "0.06em",
-                    color: "#8AAAA0",
-                  }}
-                >
-                  <span>MEMBER&nbsp;&middot;&nbsp;ACTIVE&nbsp;1&nbsp;YR</span>
-                  <span>WS+&nbsp;&middot;&nbsp;2026</span>
-                </div>
-              </div>
+              />
             </div>
           </ScrollReveal>
         </div>
@@ -279,7 +187,7 @@ export default function Hero() {
         }
         .hero-id-card:hover {
           transform: rotate(-2deg) translateY(2px) !important;
-          box-shadow: 0 28px 56px -8px rgba(0,10,18,.8), 0 10px 20px -6px rgba(0,10,18,.6), inset 0 1px 0 rgba(255,255,255,.07) !important;
+          filter: drop-shadow(0 28px 48px rgba(0,10,18,.78)) drop-shadow(0 10px 20px rgba(0,10,18,.55)) !important;
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-id-card { transition: none !important; }

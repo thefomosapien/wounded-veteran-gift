@@ -190,9 +190,14 @@ export default function WaitlistRow() {
         className="card-row"
       >
         {Array.from({ length: TOTAL }, (_, i) => {
-          if (i < FUNDED)                    return <span key={i} className="card card-funded"><span className="card-chip" /></span>;
-          if (i === FUNDED)                  return <span key={i} className="card card-progress"><span className="card-chip" /></span>;
-          /* waiting */                      return <span key={i} className="card"><span className="card-chip" /></span>;
+          const cls =
+            i < FUNDED   ? "card card-funded"
+            : i === FUNDED ? "card card-progress"
+            : "card card-waiting";
+          return (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} src="/images/card-icon.svg" alt="" aria-hidden="true" className={cls} />
+          );
         })}
       </div>
 
@@ -226,62 +231,34 @@ export default function WaitlistRow() {
           grid-template-columns: repeat(${TOTAL}, 1fr);
           gap: clamp(5px, 0.9vw, 10px);
           margin-top: 18px;
+          align-items: center;
         }
         .card {
           display: block;
-          position: relative;
-          aspect-ratio: 1.586 / 1;
+          width: 100%;
+          height: auto;
           border-radius: 5px;
-          border: 1.5px solid rgba(181,223,208,.38);
-          background: transparent;
-          overflow: hidden;
-        }
-        /* the small chip mark inside each card (mimics a card's EMV chip) */
-        .card-chip {
-          position: absolute;
-          left: 16%;
-          top: 32%;
-          width: 28%;
-          height: 36%;
-          border-radius: 3px;
-          display: block;
-          border: 1.5px solid rgba(181,223,208,.28);
-          background: transparent;
         }
 
-        /* funded — solid gold */
-        .card-funded {
-          background: var(--color-gold);
-          border-color: var(--color-gold);
-        }
-        .card-funded .card-chip {
-          border-color: rgba(0,30,51,.30);
-          background: rgba(0,30,51,.12);
+        /* funded — the card, fully rendered */
+        .card-funded { opacity: 1; }
+
+        /* waiting — ghosted, to read as 'still needs a sponsor' */
+        .card-waiting {
+          filter: grayscale(1);
+          opacity: 0.28;
         }
 
-        /* in-progress — slow, gentle gold breathe */
+        /* in-progress — slow breathe from ghosted to fully rendered */
         @keyframes cardBreathe {
-          0%, 100% {
-            background: rgba(255,196,62,.18);
-            border-color: rgba(255,196,62,.45);
-          }
-          50% {
-            background: rgba(255,196,62,.45);
-            border-color: rgba(255,196,62,.85);
-          }
+          0%, 100% { opacity: 0.3; filter: grayscale(0.85); }
+          50%      { opacity: 1;   filter: grayscale(0); }
         }
         .card-progress {
           animation: cardBreathe 3.6s ease-in-out infinite;
         }
-        .card-progress .card-chip {
-          border-color: rgba(255,196,62,.35);
-        }
         @media (prefers-reduced-motion: reduce) {
-          .card-progress {
-            animation: none;
-            background: rgba(255,196,62,.30);
-            border-color: rgba(255,196,62,.60);
-          }
+          .card-progress { animation: none; opacity: 0.72; filter: grayscale(0.2); }
         }
       `}</style>
     </div>
